@@ -20,7 +20,7 @@ describe("dinosaur database", () => {
     expect(ids.size).toBe(24);
     for (const d of dinosaurs) {
       expect(d.image).toMatch(/^\/dinos\/.+\.png$/);
-      expect(d.imageAttribution).toContain("TotalDino");
+      expect(d.imageAttribution).toContain("Wikimedia Commons");
       expect(d.interestingFacts.length).toBeGreaterThanOrEqual(3);
       expect(d.description.length).toBeGreaterThan(80);
       expect([1, 2]).toContain(d.difficulty); // M1 ships tiers 1–2
