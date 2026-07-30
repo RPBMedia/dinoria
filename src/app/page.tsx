@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { JungleScene } from "@/components/JungleScene";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PlayHub } from "@/components/PlayHub";
@@ -31,9 +32,12 @@ export default function Home() {
             <span className="rounded-full bg-canopy-950/50 px-3 py-1.5 ring-1 ring-cream/10">
               🔥 Streak bonuses
             </span>
-            <span className="rounded-full bg-canopy-950/50 px-3 py-1.5 ring-1 ring-cream/10">
-              🏆 Leaderboards
-            </span>
+            <Link
+              href="/collection"
+              className="rounded-full bg-canopy-950/50 px-3 py-1.5 ring-1 ring-cream/10 transition-colors hover:text-cream"
+            >
+              📖 Collect all {TOTAL_DINOSAURS}
+            </Link>
           </div>
         </section>
 

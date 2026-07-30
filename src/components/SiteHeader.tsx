@@ -19,7 +19,13 @@ export function SiteHeader() {
         <Logo className="text-2xl" />
       </Link>
 
-      <nav className="flex items-center gap-2 text-sm">
+      <nav className="flex items-center gap-1 text-sm sm:gap-2">
+        <Link
+          href="/collection"
+          className="rounded-full px-3 py-2 text-cream-dim transition-colors hover:text-cream"
+        >
+          Collection
+        </Link>
         <Link
           href="/leaderboard"
           className="rounded-full px-3 py-2 text-cream-dim transition-colors hover:text-cream"

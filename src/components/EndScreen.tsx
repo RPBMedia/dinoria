@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import type { GameResult } from "@/types/game";
+import type { Dinosaur } from "@/types/dinosaur";
 import { useAuth } from "@/services/auth";
 import { saveLocalScore, submitGlobalScore } from "@/services/leaderboard";
+import { readLocalCollection } from "@/services/collection";
+import { useCollection } from "@/hooks/useCollection";
+import { getDinosaur } from "@/lib/dinosaurs";
 import { Button, ButtonLink, Card, Stat } from "@/components/ui";
 
 function fmtTime(ms: number | null): string {
@@ -20,16 +25,27 @@ export function EndScreen({
   onHome: () => void;
 }) {
   const { player } = useAuth();
+  const { discover } = useCollection();
   const [shared, setShared] = useState(false);
+  const [newFinds, setNewFinds] = useState<Dinosaur[]>([]);
   const savedRef = useRef(false);
 
-  // Persist the score exactly once (StrictMode double-mount guard).
+  // Persist the score + record discoveries exactly once (StrictMode guard).
   useEffect(() => {
     if (savedRef.current) return;
     savedRef.current = true;
+    // Which of this run's correct IDs were not already in the collection?
+    const known = new Set(readLocalCollection());
+    setNewFinds(
+      result.discoveredIds
+        .filter((id) => !known.has(id))
+        .map((id) => getDinosaur(id))
+        .filter((d): d is Dinosaur => Boolean(d)),
+    );
+    discover(result.discoveredIds);
     saveLocalScore(player, result);
     void submitGlobalScore(player, result).catch(() => {});
-  }, [player, result]);
+  }, [player, result, discover]);
 
   const accuracyPct = Math.round(result.accuracy * 100);
   const greatRun = accuracyPct >= 80;
@@ -87,6 +103,38 @@ export function EndScreen({
         </div>
       </Card>
 
+      {newFinds.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
+          <Card className="mt-6 p-5">
+            <div className="text-center text-sm font-700 text-sun-300">
+              ✨ New for your collection ({newFinds.length})
+            </div>
+            <div className="mt-3 flex flex-wrap justify-center gap-3">
+              {newFinds.slice(0, 8).map((d) => (
+                <div key={d.id} className="w-20 text-center">
+                  <div className="relative aspect-square w-20 rounded-2xl bg-canopy-950/50 ring-1 ring-cream/10">
+                    <Image
+                      src={d.image}
+                      alt={d.displayName}
+                      fill
+                      sizes="80px"
+                      className="object-contain p-1.5"
+                    />
+                  </div>
+                  <div className="mt-1 truncate text-xs text-cream-dim">
+                    {d.displayName}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+      )}
+
       <div className="mt-6 grid grid-cols-2 gap-3">
         <Button variant="leaf" size="lg" onClick={() => window.location.reload()}>
           Play again
@@ -94,10 +142,13 @@ export function EndScreen({
         <Button variant="wood" size="lg" onClick={onHome}>
           Home
         </Button>
-        <ButtonLink variant="wood" href="/leaderboard">
-          Leaderboard
+        <ButtonLink variant="wood" href="/collection">
+          📖 Collection
         </ButtonLink>
-        <Button variant="wood" onClick={share}>
+        <ButtonLink variant="wood" href="/leaderboard">
+          🏆 Leaderboard
+        </ButtonLink>
+        <Button variant="wood" onClick={share} className="col-span-2">
           {shared ? "Copied!" : "Share"}
         </Button>
       </div>

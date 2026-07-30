@@ -20,16 +20,17 @@ export const MODE_QUESTION_COUNT: Record<Exclude<GameMode, "endless">, number> =
   };
 
 /** Which dinosaur tiers each game difficulty draws from, and its score
- * multiplier. M1 ships tiers 1–2 (see PRD milestones). */
+ * multiplier. Difficulty is cumulative — each step adds rarer species on top
+ * of the easier pools (M2 ships all five tiers; see PRD milestones). */
 export const DIFFICULTY_CONFIG: Record<
   GameDifficulty,
   { maxTier: number; multiplier: number; available: boolean }
 > = {
   easy: { maxTier: 1, multiplier: 1, available: true },
   normal: { maxTier: 2, multiplier: 1.25, available: true },
-  hard: { maxTier: 3, multiplier: 1.5, available: false },
-  "very-hard": { maxTier: 4, multiplier: 1.75, available: false },
-  legendary: { maxTier: 5, multiplier: 2, available: false },
+  hard: { maxTier: 3, multiplier: 1.5, available: true },
+  "very-hard": { maxTier: 4, multiplier: 1.75, available: true },
+  legendary: { maxTier: 5, multiplier: 2, available: true },
 };
 
 const BASE_POINTS = 100;

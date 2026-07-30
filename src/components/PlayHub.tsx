@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import type { GameDifficulty, GameMode } from "@/types/game";
-import { DIFFICULTY_CONFIG } from "@/lib/quiz";
+import { DIFFICULTY_CONFIG, poolFor } from "@/lib/quiz";
+import { DINOSAURS } from "@/lib/dinosaurs";
 import { Button, Card } from "@/components/ui";
 import { QuizGame } from "@/components/QuizGame";
+
+const poolSize = (id: GameDifficulty) => poolFor(DINOSAURS, id).length;
 
 const DIFFICULTIES: {
   id: GameDifficulty;
@@ -14,11 +17,11 @@ const DIFFICULTIES: {
   blurb: string;
   emoji: string;
 }[] = [
-  { id: "easy", label: "Easy", blurb: "The 12 most famous dinosaurs", emoji: "🥚" },
-  { id: "normal", label: "Normal", blurb: "All 24 dinosaurs", emoji: "🦕" },
-  { id: "hard", label: "Hard", blurb: "Coming soon", emoji: "🦖" },
-  { id: "very-hard", label: "Very Hard", blurb: "Coming soon", emoji: "🌋" },
-  { id: "legendary", label: "Legendary", blurb: "Coming soon", emoji: "👑" },
+  { id: "easy", label: "Easy", blurb: `The ${poolSize("easy")} most famous`, emoji: "🥚" },
+  { id: "normal", label: "Normal", blurb: `${poolSize("normal")} classic dinosaurs`, emoji: "🦕" },
+  { id: "hard", label: "Hard", blurb: `${poolSize("hard")} species to master`, emoji: "🦖" },
+  { id: "very-hard", label: "Very Hard", blurb: `${poolSize("very-hard")} incl. rare finds`, emoji: "🌋" },
+  { id: "legendary", label: "Legendary", blurb: `All ${poolSize("legendary")} dinosaurs`, emoji: "👑" },
 ];
 
 const MODES: { id: GameMode; label: string }[] = [

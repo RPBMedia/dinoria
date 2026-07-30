@@ -14,22 +14,25 @@ import {
 const dinosaurs = dinosaursJson as Dinosaur[];
 
 describe("dinosaur database", () => {
-  it("has 24 complete records with unique ids and local images", () => {
-    expect(dinosaurs).toHaveLength(24);
+  it("has 58 complete records with unique ids and local images", () => {
+    expect(dinosaurs).toHaveLength(58);
     const ids = new Set(dinosaurs.map((d) => d.id));
-    expect(ids.size).toBe(24);
+    expect(ids.size).toBe(58);
     for (const d of dinosaurs) {
       expect(d.image).toMatch(/^\/dinos\/.+\.png$/);
       expect(d.imageAttribution).toContain("Wikimedia Commons");
       expect(d.interestingFacts.length).toBeGreaterThanOrEqual(3);
       expect(d.description.length).toBeGreaterThan(80);
-      expect([1, 2]).toContain(d.difficulty); // M1 ships tiers 1–2
+      expect([1, 2, 3, 4, 5]).toContain(d.difficulty); // M2 ships tiers 1–5
     }
   });
 
-  it("easy pool has the 12 icons; normal pool has all 24", () => {
-    expect(poolFor(dinosaurs, "easy")).toHaveLength(12);
-    expect(poolFor(dinosaurs, "normal")).toHaveLength(24);
+  it("difficulty pools are cumulative across all five tiers", () => {
+    expect(poolFor(dinosaurs, "easy")).toHaveLength(12); // tier 1
+    expect(poolFor(dinosaurs, "normal")).toHaveLength(24); // tiers 1–2
+    expect(poolFor(dinosaurs, "hard")).toHaveLength(37); // tiers 1–3
+    expect(poolFor(dinosaurs, "very-hard")).toHaveLength(48); // tiers 1–4
+    expect(poolFor(dinosaurs, "legendary")).toHaveLength(58); // tiers 1–5
   });
 });
 
@@ -126,10 +129,11 @@ describe("scoreAnswer", () => {
     expect(s50).toBe(s10); // capped
   });
 
-  it("M1 exposes easy+normal as available, higher tiers locked", () => {
+  it("M2 exposes all five difficulties as available", () => {
     expect(DIFFICULTY_CONFIG.easy.available).toBe(true);
     expect(DIFFICULTY_CONFIG.normal.available).toBe(true);
-    expect(DIFFICULTY_CONFIG.hard.available).toBe(false);
-    expect(DIFFICULTY_CONFIG.legendary.available).toBe(false);
+    expect(DIFFICULTY_CONFIG.hard.available).toBe(true);
+    expect(DIFFICULTY_CONFIG["very-hard"].available).toBe(true);
+    expect(DIFFICULTY_CONFIG.legendary.available).toBe(true);
   });
 });

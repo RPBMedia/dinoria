@@ -55,6 +55,11 @@ service cloud.firestore {
         && request.resource.data.score >= 0;
       allow update, delete: if false;
     }
+    // Each player owns one collection document keyed by their uid: the set of
+    // dinosaurs they've discovered. Only they can read or write it.
+    match /collections/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
   }
 }
 ```
