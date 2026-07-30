@@ -1,26 +1,130 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Dinoria design tokens — a warm prehistoric jungle at golden hour.
+   Deep canopy greens grounded by amber sunlight; volcanic orange reserved
+   for danger/wrong, leaf green for success/correct. */
+@theme {
+  --color-canopy-950: #071f15;
+  --color-canopy-900: #0b2e1f;
+  --color-canopy-800: #123f2b;
+  --color-canopy-700: #1b5138;
+  --color-canopy-600: #276a49;
+
+  --color-cream: #f7f3e8;
+  --color-cream-dim: #cfd8c3;
+  --color-cream-faint: #9db396;
+
+  --color-sun-300: #ffd98a;
+  --color-sun-400: #ffc95e;
+  --color-sun-500: #ffb74a;
+  --color-sun-600: #f09b2d;
+
+  --color-leaf-400: #5fd984;
+  --color-leaf-500: #4cc26e;
+  --color-leaf-600: #35a457;
+
+  --color-lava-400: #ff8a5e;
+  --color-lava-500: #ff6b3d;
+  --color-lava-600: #e04f24;
+
+  --font-display: var(--font-fredoka);
+  --font-body: var(--font-nunito);
+
+  --shadow-chunky:
+    0 4px 0 rgba(0, 0, 0, 0.25), 0 12px 28px -12px rgba(0, 0, 0, 0.6);
+  --shadow-pop: 0 2px 0 rgba(0, 0, 0, 0.2), 0 8px 20px -10px rgba(0, 0, 0, 0.5);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-canopy-950);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-cream);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- prehistoric scene keyframes ----------------------------------------- */
+
+@keyframes mist-drift {
+  from {
+    transform: translateX(-6%);
+  }
+  to {
+    transform: translateX(6%);
+  }
+}
+
+@keyframes smoke-rise {
+  0% {
+    transform: translateY(0) scale(0.7);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-90px) scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes bird-fly {
+  0% {
+    transform: translateX(-8vw) translateY(0);
+  }
+  50% {
+    transform: translateX(50vw) translateY(-26px);
+  }
+  100% {
+    transform: translateX(110vw) translateY(6px);
+  }
+}
+
+@keyframes sun-pulse {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-animated *,
+  .scene-animated::before,
+  .scene-animated::after {
+    animation: none !important;
+  }
+}
+
+/* ---- shared chunky controls ---------------------------------------------- */
+
+.btn-chunky {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 1rem;
+  transition:
+    transform 0.12s ease,
+    filter 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.btn-chunky:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+.btn-chunky:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-chunky:focus-visible {
+  outline: 3px solid var(--color-sun-400);
+  outline-offset: 2px;
+}
+
+.btn-chunky:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

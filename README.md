@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🦕 Dinoria
 
-## Getting Started
+**A beautiful prehistoric quiz adventure.** Study the artwork, name the
+dinosaur, beat the clock, build streaks and climb the leaderboard. Built to grow
+from a quiz into a whole prehistoric learning world (see `DINORIA_PRD.md`).
 
-First, run the development server:
+> **Milestone 1 (this iteration):** polished MVP — animated jungle landing,
+> guest play, the "Name that dinosaur" quiz with a timer, speed/streak/difficulty
+> scoring, an end screen, a 24-dinosaur database, leaderboards, optional accounts
+> (Firebase, graceful fallback), SEO, and a production build. Fully playable with
+> **no backend required**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Tech stack
+
+- **Next.js 16** (App Router) · **React 19** · **TypeScript**
+- **Tailwind CSS v4** · **Framer Motion** (subtle motion)
+- **Firebase** Auth + Firestore — *optional* (guest play + local scores work
+  without it)
+- **React Query** · **Vitest** · **ESLint** · **Prettier**
+
+## Architecture
+
+```
+src/
+  app/        routes, layout, SEO (robots/sitemap/manifest)
+  components/ UI (JungleScene, QuizGame, EndScreen, PlayHub, header, modals)
+  hooks/      useGame — the quiz state machine
+  lib/        quiz engine (pure, tested), rng, dinosaur accessors, site config
+  services/   auth + leaderboard (Firebase-optional)
+  data/       dinosaurs.json — the single, data-driven source of dino content
+  types/      domain models
+public/dinos/ self-hosted, licensed dinosaur artwork
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Business logic (question generation, distractors, scoring) lives in
+`src/lib/quiz.ts` — pure and unit-tested, with no React or I/O.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Run it
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev        # http://localhost:3000
+npm run test       # engine unit tests
+npm run lint
+npm run build      # production build
+```
 
-## Learn More
+The game runs immediately as a **guest** — no configuration needed. To enable
+accounts and the global leaderboard, add Firebase keys (see
+[`FIREBASE-SETUP.md`](./FIREBASE-SETUP.md)).
 
-To learn more about Next.js, take a look at the following resources:
+## Data & attribution
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+All dinosaur content is data-driven from `src/data/dinosaurs.json`. Artwork is by
+**TotalDino** via **Wikimedia Commons** (CC0 / CC BY / CC BY-SA 4.0), credited
+per-record in `imageAttribution` and self-hosted under `public/dinos/`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+Deploys to **Vercel** as a standard Next.js app (automatic + preview
+deployments, image optimization, compression). Production domain target:
+`dinoria.com`. Set `NEXT_PUBLIC_SITE_URL` to the canonical URL for correct
+sitemap/robots/OG.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Roadmap (from the PRD)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **M2** — dinosaur collection, larger database, richer animations
+- **M3** — expeditions, world map, progression
+- **M4** — XP, levels, achievements, daily challenge
+- **M5** — multiplayer, fossil digging, seasonal events, AI facts

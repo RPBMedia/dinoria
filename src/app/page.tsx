@@ -1,65 +1,81 @@
-import Image from "next/image";
+import { JungleScene } from "@/components/JungleScene";
+import { SiteHeader } from "@/components/SiteHeader";
+import { PlayHub } from "@/components/PlayHub";
+import { TOTAL_DINOSAURS } from "@/lib/dinosaurs";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="relative flex flex-1 flex-col">
+      <JungleScene />
+      <SiteHeader />
+
+      <main className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center px-4 pb-16">
+        <section className="pt-6 pb-10 text-center sm:pt-12">
+          <p className="font-[family-name:var(--font-fredoka)] text-sm uppercase tracking-[0.3em] text-sun-300">
+            Welcome to Dinoria
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          <h1 className="mt-3 font-[family-name:var(--font-fredoka)] text-5xl font-700 leading-[1.05] text-cream drop-shadow-[0_3px_0_rgba(0,0,0,0.35)] sm:text-7xl">
+            Name that
+            <br />
+            <span className="text-sun-400">dinosaur.</span>
+          </h1>
+          <p className="mx-auto mt-5 max-w-xl text-lg text-cream-dim">
+            A beautiful prehistoric quiz adventure. Study the artwork, beat the
+            clock, build fiery streaks and discover all {TOTAL_DINOSAURS}{" "}
+            dinosaurs. Free to play &mdash; no download needed.
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm text-cream-faint">
+            <span className="rounded-full bg-canopy-950/50 px-3 py-1.5 ring-1 ring-cream/10">
+              ⏱️ Beat the clock
+            </span>
+            <span className="rounded-full bg-canopy-950/50 px-3 py-1.5 ring-1 ring-cream/10">
+              🔥 Streak bonuses
+            </span>
+            <span className="rounded-full bg-canopy-950/50 px-3 py-1.5 ring-1 ring-cream/10">
+              🏆 Leaderboards
+            </span>
+          </div>
+        </section>
+
+        <PlayHub />
+
+        <section className="mt-16 grid w-full max-w-3xl grid-cols-1 gap-4 text-center sm:grid-cols-3">
+          <Feature emoji="🎨" title="Stunning artwork">
+            Every dinosaur is shown in beautiful, scientifically-inspired art.
+          </Feature>
+          <Feature emoji="🧠" title="Learn as you play">
+            Clever wrong answers teach you to tell relatives apart.
+          </Feature>
+          <Feature emoji="👨‍👩‍👧" title="Made for families">
+            Big buttons, readable text and instant guest play for all ages.
+          </Feature>
+        </section>
       </main>
+
+      <footer className="relative z-10 border-t border-cream/10 py-6 text-center text-sm text-cream-faint">
+        Dinoria &mdash; a prehistoric learning world. Dinosaur artwork &copy;
+        their creators via Wikimedia Commons.
+      </footer>
+    </div>
+  );
+}
+
+function Feature({
+  emoji,
+  title,
+  children,
+}: {
+  emoji: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-3xl bg-canopy-900/50 p-5 ring-1 ring-cream/10">
+      <div className="text-3xl">{emoji}</div>
+      <h3 className="mt-2 font-[family-name:var(--font-fredoka)] font-700 text-cream">
+        {title}
+      </h3>
+      <p className="mt-1 text-sm text-cream-dim">{children}</p>
     </div>
   );
 }
