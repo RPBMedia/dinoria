@@ -506,8 +506,14 @@ Only continue after Milestone 1 is stable.
 -   Levels
 -   Achievements
 -   Daily Challenge
+-   Home screen animation upgrade: replace the simple bird silhouettes drifting
+    across the sky with silhouettes of flying Pteranodons (pterosaurs), at
+    varied sizes and speeds for a sense of depth. Keep the animation subtle and
+    performant, and respect reduced-motion preferences.
 
 ## Milestone 5
+
+-   Dinosaur catalog expanded to 150
 
 Advanced systems:
 
@@ -516,6 +522,11 @@ Advanced systems:
 -   Fossil digging
 -   AI facts
 -   Additional modes
+
+## Milestone 6
+
+-   Dinosaur catalog expanded to 200
+-   Continued content, polish and performance work
 
 ------------------------------------------------------------------------
 
