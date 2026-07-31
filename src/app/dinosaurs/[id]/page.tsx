@@ -19,8 +19,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { id } = await params;
   const dino = getDinosaur(id);
   if (!dino) return {};
-  const title = `${dino.displayName} — facts, size & pictures`;
-  const description = `${dino.displayName} (${dino.pronunciation}): ${dino.description}`;
+  const title = `${dino.displayName} facts for kids — size, diet & pictures`;
+  const description = `${dino.displayName} (${dino.pronunciation}), a ${dino.period} ${dino.diet}: ${dino.description}`;
   const url = `${SITE_URL}/dinosaurs/${dino.id}`;
   const image = `${SITE_URL}${dino.image}`;
   return {
@@ -51,12 +51,29 @@ export default async function DinosaurPage({ params }: Params) {
   // Structured data helps search engines understand the page.
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    headline: `${dino.displayName} — facts, size and pictures`,
-    about: dino.scientificName,
-    image: `${SITE_URL}${dino.image}`,
-    description: dino.description,
-    articleSection: "Dinosaurs",
+    "@graph": [
+      {
+        "@type": "Article",
+        headline: `${dino.displayName} — facts, size and pictures`,
+        about: dino.scientificName,
+        image: `${SITE_URL}${dino.image}`,
+        description: dino.description,
+        articleSection: "Dinosaurs",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Dinoria", item: `${SITE_URL}/` },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Dinosaurs",
+            item: `${SITE_URL}/dinosaurs`,
+          },
+          { "@type": "ListItem", position: 3, name: dino.displayName },
+        ],
+      },
+    ],
   };
 
   return (
@@ -69,8 +86,8 @@ export default async function DinosaurPage({ params }: Params) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <nav className="mt-4 text-sm text-cream-faint">
-          <Link href="/collection" className="hover:text-cream">
-            ← Back to collection
+          <Link href="/dinosaurs" className="hover:text-cream">
+            ← All dinosaurs
           </Link>
         </nav>
         <div className="mt-4 rounded-3xl bg-canopy-900/70 p-5 ring-1 ring-cream/10 shadow-chunky backdrop-blur-md sm:p-6">

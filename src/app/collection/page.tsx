@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { JungleScene } from "@/components/JungleScene";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CollectionGrid } from "@/components/CollectionGrid";
@@ -23,7 +24,11 @@ export default function CollectionPage() {
           </h1>
           <p className="mx-auto mt-2 max-w-lg text-cream-dim">
             Every dinosaur you correctly name in the quiz is added here. Tap a
-            discovered dinosaur to study its full profile.
+            discovered dinosaur to study its full profile — or browse the{" "}
+            <Link href="/dinosaurs" className="text-sun-300 underline hover:text-sun-200">
+              full dinosaur encyclopedia
+            </Link>
+            .
           </p>
         </header>
 

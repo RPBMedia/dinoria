@@ -37,6 +37,22 @@ export const metadata: Metadata = {
       "Name that dinosaur! Beat the clock, build streaks and climb the leaderboard.",
     type: "website",
     siteName: "Dinoria",
+    locale: "en_US",
+    images: [
+      {
+        url: "/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Dinoria — name that dinosaur quiz game",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dinoria — The Dinosaur Quiz Adventure",
+    description:
+      "Name that dinosaur! Beat the clock, build streaks and climb the leaderboard.",
+    images: ["/og.jpg"],
   },
 };
 

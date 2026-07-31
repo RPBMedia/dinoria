@@ -1,12 +1,50 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { JungleScene } from "@/components/JungleScene";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PlayHub } from "@/components/PlayHub";
 import { TOTAL_DINOSAURS } from "@/lib/dinosaurs";
+import { SITE_URL } from "@/lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: SITE_URL },
+  openGraph: { url: SITE_URL },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: `${SITE_URL}/`,
+      name: "Dinoria",
+      description:
+        "A free prehistoric dinosaur quiz adventure for kids and dinosaur fans.",
+    },
+    {
+      "@type": "VideoGame",
+      name: "Dinoria — The Dinosaur Quiz Adventure",
+      url: `${SITE_URL}/`,
+      image: `${SITE_URL}/og.jpg`,
+      description: `Name that dinosaur! Identify ${TOTAL_DINOSAURS} dinosaurs from original artwork, beat the clock, build streaks, collect them all and explore the expedition map.`,
+      genre: ["Educational", "Trivia", "Quiz"],
+      applicationCategory: "GameApplication",
+      operatingSystem: "Web browser",
+      inLanguage: "en",
+      gamePlatform: "Web",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+  ],
+};
 
 export default function Home() {
   return (
     <div className="relative flex flex-1 flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <JungleScene />
       <SiteHeader />
 
