@@ -60,6 +60,11 @@ service cloud.firestore {
     match /collections/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
     }
+    // Likewise, each player owns one expedition-progress document (region stars
+    // and best scores) keyed by their uid.
+    match /expeditions/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
   }
 }
 ```

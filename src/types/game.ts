@@ -43,6 +43,16 @@ export interface GameResult {
   finishedAt: number;
 }
 
+/** Per-region expedition progress (best result achieved). */
+export interface RegionRecord {
+  /** 0–3 stars; 0 = attempted but not cleared. */
+  stars: number;
+  bestScore: number;
+}
+
+/** regionId → best result. */
+export type ExpeditionProgress = Record<string, RegionRecord>;
+
 export interface LeaderboardEntry {
   name: string;
   score: number;

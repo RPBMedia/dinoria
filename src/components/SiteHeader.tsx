@@ -21,6 +21,12 @@ export function SiteHeader() {
 
       <nav className="flex items-center gap-1 text-sm sm:gap-2">
         <Link
+          href="/expeditions"
+          className="rounded-full px-3 py-2 text-cream-dim transition-colors hover:text-cream"
+        >
+          Expeditions
+        </Link>
+        <Link
           href="/collection"
           className="rounded-full px-3 py-2 text-cream-dim transition-colors hover:text-cream"
         >

@@ -47,16 +47,35 @@ export interface GameView {
   next: () => void;
 }
 
-export function useGame(mode: GameMode, difficulty: GameDifficulty): GameView {
+/** Expedition runs override the default pools: answers are themed to a period
+ * (a small pool), while distractors come from the full database, and the length
+ * is fixed by the region. */
+export interface GameOptions {
+  answerPool?: readonly Dinosaur[];
+  distractorPool?: readonly Dinosaur[];
+  questionCount?: number;
+}
+
+export function useGame(
+  mode: GameMode,
+  difficulty: GameDifficulty,
+  options?: GameOptions,
+): GameView {
   const seed = useMemo(() => Date.now() >>> 0, []);
-  const pool = useMemo(() => poolFor(DINOSAURS, difficulty), [difficulty]);
+  const answerPool = options?.answerPool;
+  const pool = useMemo(
+    () => answerPool ?? poolFor(DINOSAURS, difficulty),
+    [answerPool, difficulty],
+  );
+  const distractorPool = options?.distractorPool ?? pool;
   const rngRef = useRef(mulberry32(seed));
 
   const initialCount =
-    mode === "endless" ? ENDLESS_CHUNK : MODE_QUESTION_COUNT[mode];
+    options?.questionCount ??
+    (mode === "endless" ? ENDLESS_CHUNK : MODE_QUESTION_COUNT[mode]);
 
   const [questions, setQuestions] = useState<Question[]>(() =>
-    buildQuestions(pool, initialCount, rngRef.current),
+    buildQuestions(pool, initialCount, rngRef.current, distractorPool),
   );
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("answering");
@@ -173,14 +192,23 @@ export function useGame(mode: GameMode, difficulty: GameDifficulty): GameView {
     if (mode === "endless" && index + 2 >= questions.length) {
       setQuestions((qs) => [
         ...qs,
-        ...buildQuestions(pool, ENDLESS_CHUNK, rngRef.current),
+        ...buildQuestions(pool, ENDLESS_CHUNK, rngRef.current, distractorPool),
       ]);
     }
     setSelectedId(null);
     setLastPoints(0);
     setIndex((i) => i + 1);
     setPhase("answering");
-  }, [records, mode, lives, questions.length, index, pool, buildResult]);
+  }, [
+    records,
+    mode,
+    lives,
+    questions.length,
+    index,
+    pool,
+    distractorPool,
+    buildResult,
+  ]);
 
   const lastRecord = records[records.length - 1];
 

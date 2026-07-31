@@ -79,26 +79,51 @@ export function pickDistractors(
 // ---- question generation ----------------------------------------------------
 
 /**
- * Build the question list for a game. Answers never repeat until the pool is
- * exhausted (then it reshuffles — relevant for endless mode with small pools).
+ * Build the question list for a game. Answers are drawn from `pool` (never
+ * repeating until it is exhausted, then it reshuffles). Distractors are drawn
+ * from `distractorPool` — which defaults to the answer pool, but expeditions
+ * pass the full database so a small themed pool (e.g. the four Triassic
+ * species) still yields four plausible options per question.
  */
 export function buildQuestions(
   pool: readonly Dinosaur[],
   count: number,
   rng: Rng = mulberry32(Date.now()),
+  distractorPool: readonly Dinosaur[] = pool,
 ): Question[] {
-  if (pool.length < 4) {
-    throw new Error("Need at least 4 dinosaurs to build a quiz.");
+  if (pool.length < 1) {
+    throw new Error("Need at least one dinosaur to build a quiz.");
+  }
+  if (distractorPool.length < 4) {
+    throw new Error("Need at least 4 dinosaurs to fill the answer options.");
   }
   const questions: Question[] = [];
   let order = shuffle(pool, rng);
   for (let i = 0; i < count; i++) {
     if (order.length === 0) order = shuffle(pool, rng);
     const answer = order.pop()!;
-    const options = shuffle([answer, ...pickDistractors(answer, pool, rng)], rng);
+    const options = shuffle(
+      [answer, ...pickDistractors(answer, distractorPool, rng)],
+      rng,
+    );
     questions.push({ answer, options });
   }
   return questions;
+}
+
+// ---- expeditions ------------------------------------------------------------
+
+/** Star thresholds for an expedition region (fraction correct). 1★ also marks
+ * the region as cleared, unlocking the next. Below 1★ = retry. */
+export const EXPEDITION_STAR_THRESHOLDS = { one: 0.5, two: 0.7, three: 0.9 };
+
+export function starsFor(correct: number, total: number): 0 | 1 | 2 | 3 {
+  const acc = total > 0 ? correct / total : 0;
+  const t = EXPEDITION_STAR_THRESHOLDS;
+  if (acc >= t.three) return 3;
+  if (acc >= t.two) return 2;
+  if (acc >= t.one) return 1;
+  return 0;
 }
 
 // ---- scoring ----------------------------------------------------------------

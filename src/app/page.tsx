@@ -29,9 +29,12 @@ export default function Home() {
             <span className="rounded-full bg-canopy-950/50 px-3 py-1.5 ring-1 ring-cream/10">
               ⏱️ Beat the clock
             </span>
-            <span className="rounded-full bg-canopy-950/50 px-3 py-1.5 ring-1 ring-cream/10">
-              🔥 Streak bonuses
-            </span>
+            <Link
+              href="/expeditions"
+              className="rounded-full bg-canopy-950/50 px-3 py-1.5 ring-1 ring-cream/10 transition-colors hover:text-cream"
+            >
+              🧭 Expeditions
+            </Link>
             <Link
               href="/collection"
               className="rounded-full bg-canopy-950/50 px-3 py-1.5 ring-1 ring-cream/10 transition-colors hover:text-cream"

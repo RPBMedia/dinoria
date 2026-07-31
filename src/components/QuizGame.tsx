@@ -1,10 +1,11 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import type { GameDifficulty, GameMode } from "@/types/game";
+import type { GameDifficulty, GameMode, GameResult } from "@/types/game";
 import type { Dinosaur } from "@/types/dinosaur";
-import { useGame } from "@/hooks/useGame";
+import { useGame, type GameOptions } from "@/hooks/useGame";
 import { Button } from "@/components/ui";
 import { EndScreen } from "@/components/EndScreen";
 
@@ -12,15 +13,25 @@ export function QuizGame({
   mode,
   difficulty,
   onExit,
+  gameOptions,
+  renderResult,
 }: {
   mode: GameMode;
   difficulty: GameDifficulty;
   onExit: () => void;
+  /** Expedition runs override the pools + length. */
+  gameOptions?: GameOptions;
+  /** Expedition runs supply their own results screen (stars, unlocks). */
+  renderResult?: (result: GameResult) => ReactNode;
 }) {
-  const game = useGame(mode, difficulty);
+  const game = useGame(mode, difficulty, gameOptions);
 
   if (game.phase === "finished" && game.result) {
-    return <EndScreen result={game.result} onHome={onExit} />;
+    return renderResult ? (
+      <>{renderResult(game.result)}</>
+    ) : (
+      <EndScreen result={game.result} onHome={onExit} />
+    );
   }
 
   const q = game.question;

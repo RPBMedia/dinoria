@@ -1506,5 +1506,31 @@
       "It was a smaller relative of the famous Pachycephalosaurus.",
       "Its reinforced skull may have been used for head-shoving or display."
     ]
+  },
+  {
+    "id": "nyasasaurus",
+    "scientificName": "Nyasasaurus parringtoni",
+    "displayName": "Nyasasaurus",
+    "pronunciation": "ny-AS-ah-SORE-us",
+    "meaning": "Lake Nyasa lizard",
+    "image": "/dinos/nyasasaurus.png",
+    "imageAttribution": "TotalDino, Wikimedia Commons, CC BY 4.0",
+    "difficulty": 5,
+    "family": "Dinosauriformes",
+    "period": "Triassic",
+    "periodDetail": "Middle Triassic, ~245 million years ago",
+    "diet": "omnivore",
+    "heightMeters": 0.8,
+    "lengthMeters": 2.5,
+    "weightKg": 40,
+    "country": "Tanzania",
+    "discoveryYear": 2012,
+    "discoverer": "Sterling Nesbitt",
+    "description": "Possibly the earliest known dinosaur — or its closest cousin — from the Middle Triassic of Tanzania. Living around 245 million years ago, it pushes the dawn of the dinosaurs back by millions of years.",
+    "interestingFacts": [
+      "It may be the oldest known dinosaur, living about 245 million years ago.",
+      "It is named after Lake Nyasa (Lake Malawi), near where its bones were found in Tanzania.",
+      "Its fossils sat in a museum drawer for roughly 80 years before being identified in 2012."
+    ]
   }
 ]

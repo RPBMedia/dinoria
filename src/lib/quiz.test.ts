@@ -14,10 +14,10 @@ import {
 const dinosaurs = dinosaursJson as Dinosaur[];
 
 describe("dinosaur database", () => {
-  it("has 58 complete records with unique ids and local images", () => {
-    expect(dinosaurs).toHaveLength(58);
+  it("has 59 complete records with unique ids and local images", () => {
+    expect(dinosaurs).toHaveLength(59);
     const ids = new Set(dinosaurs.map((d) => d.id));
-    expect(ids.size).toBe(58);
+    expect(ids.size).toBe(59);
     for (const d of dinosaurs) {
       expect(d.image).toMatch(/^\/dinos\/.+\.png$/);
       expect(d.imageAttribution).toContain("Wikimedia Commons");
@@ -32,7 +32,7 @@ describe("dinosaur database", () => {
     expect(poolFor(dinosaurs, "normal")).toHaveLength(24); // tiers 1–2
     expect(poolFor(dinosaurs, "hard")).toHaveLength(37); // tiers 1–3
     expect(poolFor(dinosaurs, "very-hard")).toHaveLength(48); // tiers 1–4
-    expect(poolFor(dinosaurs, "legendary")).toHaveLength(58); // tiers 1–5
+    expect(poolFor(dinosaurs, "legendary")).toHaveLength(59); // tiers 1–5
   });
 });
 
