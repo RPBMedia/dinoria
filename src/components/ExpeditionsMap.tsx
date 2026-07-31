@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import type { GameResult } from "@/types/game";
 import { DINOSAURS } from "@/lib/dinosaurs";
@@ -13,6 +14,7 @@ import {
   regionAnswerPool,
   getRegion,
   isRegionUnlocked,
+  WORLD_MAP_CREDIT,
   type ExpeditionLand,
   type ExpeditionRegion,
 } from "@/lib/expeditions";
@@ -27,25 +29,28 @@ import { Button } from "@/components/ui";
 
 const THEME: Record<
   ExpeditionLand["theme"],
-  { ring: string; badge: string; glow: string; accent: string }
+  { ring: string; badge: string; glow: string; accent: string; mapTint: string }
 > = {
   triassic: {
     ring: "ring-lava-400/30",
     badge: "bg-lava-500/15 text-lava-300 ring-lava-400/30",
     glow: "from-lava-900/40 to-canopy-950/60",
     accent: "text-lava-300",
+    mapTint: "bg-lava-500/10",
   },
   jurassic: {
     ring: "ring-leaf-400/30",
     badge: "bg-leaf-500/15 text-leaf-300 ring-leaf-400/30",
     glow: "from-leaf-900/40 to-canopy-950/60",
     accent: "text-leaf-300",
+    mapTint: "bg-leaf-500/10",
   },
   cretaceous: {
     ring: "ring-sun-400/30",
     badge: "bg-sun-500/15 text-sun-300 ring-sun-400/30",
     glow: "from-canopy-800/50 to-canopy-950/70",
     accent: "text-sun-300",
+    mapTint: "bg-sun-400/10",
   },
 };
 
@@ -110,6 +115,29 @@ export function ExpeditionsMap() {
                 key={land.id}
                 className={`overflow-hidden rounded-3xl bg-gradient-to-b ${t.glow} p-5 ring-1 ${t.ring}`}
               >
+                {/* Paleogeography: how the world looked during this period. */}
+                <div className="relative -mx-5 -mt-5 mb-4 h-32 overflow-hidden sm:h-40">
+                  <Image
+                    src={land.worldMap}
+                    alt={`Map of Earth during the ${land.period} period`}
+                    fill
+                    sizes="(max-width: 896px) 100vw, 896px"
+                    className="object-cover object-center"
+                  />
+                  {/* Dark bottom fade unifies the maps' palettes + keeps the
+                      caption legible; a themed tint reinforces the period. */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-canopy-950 via-canopy-950/55 to-canopy-950/10" />
+                  <div className={`absolute inset-0 ${t.mapTint}`} />
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <p className="flex items-center gap-1.5 text-[11px] font-600 uppercase tracking-wider text-cream-faint">
+                      🌍 The world in the {land.period}
+                    </p>
+                    <p className="mt-1 max-w-2xl text-xs leading-snug text-cream sm:text-sm">
+                      {land.worldCaption}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-3">
                   <h2 className="font-[family-name:var(--font-fredoka)] text-2xl font-700 text-cream">
                     {land.name}
@@ -176,6 +204,9 @@ export function ExpeditionsMap() {
               </section>
             );
           })}
+          <p className="pt-1 text-center text-[11px] text-cream-faint">
+            {WORLD_MAP_CREDIT}
+          </p>
         </div>
       )}
 

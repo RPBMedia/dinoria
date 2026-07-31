@@ -29,8 +29,16 @@ export interface ExpeditionLand {
   period: Period;
   /** Palette key consumed by the map UI. */
   theme: "triassic" | "jurassic" | "cretaceous";
+  /** Paleogeographic map of the world during this period (under /public). */
+  worldMap: string;
+  /** One-line description of how the world looked then. */
+  worldCaption: string;
   regions: ExpeditionRegion[];
 }
+
+/** Credit for the paleogeography maps (CC licences require attribution). */
+export const WORLD_MAP_CREDIT =
+  "Paleogeography maps by Merikanto, Wikimedia Commons (CC BY-SA 4.0 / CC0)";
 
 export const LANDS: ExpeditionLand[] = [
   {
@@ -39,6 +47,9 @@ export const LANDS: ExpeditionLand[] = [
     subtitle: "Where the dinosaurs began",
     period: "Triassic",
     theme: "triassic",
+    worldMap: "/periods/triassic.jpg",
+    worldCaption:
+      "~250 million years ago: all land was joined into one giant supercontinent, Pangaea — you could walk from pole to pole.",
     regions: [
       {
         id: "tri-1",
@@ -57,6 +68,9 @@ export const LANDS: ExpeditionLand[] = [
     subtitle: "Giants and hunters of the fern forests",
     period: "Jurassic",
     theme: "jurassic",
+    worldMap: "/periods/jurassic.jpg",
+    worldCaption:
+      "~150 million years ago: Pangaea was tearing apart and a young Atlantic Ocean opened, splitting the land into two great masses.",
     regions: [
       {
         id: "jur-1",
@@ -93,6 +107,9 @@ export const LANDS: ExpeditionLand[] = [
     subtitle: "The last and greatest age of dinosaurs",
     period: "Cretaceous",
     theme: "cretaceous",
+    worldMap: "/periods/cretaceous.jpg",
+    worldCaption:
+      "~66 million years ago: the continents had drifted close to their modern places, with warm shallow seas flooding across the land.",
     regions: [
       {
         id: "cre-1",

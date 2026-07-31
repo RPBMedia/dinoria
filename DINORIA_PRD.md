@@ -510,6 +510,9 @@ Only continue after Milestone 1 is stable.
     across the sky with silhouettes of flying Pteranodons (pterosaurs), at
     varied sizes and speeds for a sense of depth. Keep the animation subtle and
     performant, and respect reduced-motion preferences.
+-   Expeditions: for each period (Triassic, Jurassic, Cretaceous) show a
+    paleogeographic map of how the world / continents looked at that time, with
+    a short caption. (Implemented ahead of schedule.)
 
 ## Milestone 5
 
