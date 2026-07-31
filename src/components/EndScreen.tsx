@@ -10,6 +10,7 @@ import { saveLocalScore, submitGlobalScore } from "@/services/leaderboard";
 import { readLocalCollection } from "@/services/collection";
 import { useCollection } from "@/hooks/useCollection";
 import { getDinosaur } from "@/lib/dinosaurs";
+import { trackQuizFinished } from "@/lib/analytics";
 import { Button, ButtonLink, Card, Stat } from "@/components/ui";
 
 function fmtTime(ms: number | null): string {
@@ -45,6 +46,14 @@ export function EndScreen({
     discover(result.discoveredIds);
     saveLocalScore(player, result);
     void submitGlobalScore(player, result).catch(() => {});
+    trackQuizFinished({
+      mode: result.mode,
+      difficulty: result.difficulty,
+      score: result.score,
+      accuracyPct: Math.round(result.accuracy * 100),
+      correct: result.correctCount,
+      total: result.totalQuestions,
+    });
   }, [player, result, discover]);
 
   const accuracyPct = Math.round(result.accuracy * 100);

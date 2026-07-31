@@ -17,6 +17,7 @@ import {
   type ReactNode,
 } from "react";
 import { firebaseApp, firebaseConfigured } from "@/config/firebase";
+import { trackSignIn } from "@/lib/analytics";
 import type { User } from "firebase/auth";
 
 const GUEST_NAME_KEY = "dinoria.guestName";
@@ -121,6 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         "firebase/auth"
       );
       await signInWithPopup(getAuth(app), new GoogleAuthProvider());
+      trackSignIn("google");
       return null;
     } catch (e) {
       return humanError(e);
@@ -135,6 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         "firebase/auth"
       );
       await signInWithEmailAndPassword(getAuth(app), email, password);
+      trackSignIn("email");
       return null;
     } catch (e) {
       return humanError(e);
@@ -149,6 +152,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         "firebase/auth"
       );
       await createUserWithEmailAndPassword(getAuth(app), email, password);
+      trackSignIn("email_signup");
       return null;
     } catch (e) {
       return humanError(e);

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { GameDifficulty, GameMode } from "@/types/game";
 import { DIFFICULTY_CONFIG, poolFor } from "@/lib/quiz";
 import { DINOSAURS } from "@/lib/dinosaurs";
+import { trackQuizStarted } from "@/lib/analytics";
 import { Button, Card } from "@/components/ui";
 import { QuizGame } from "@/components/QuizGame";
 
@@ -121,7 +122,10 @@ export function PlayHub() {
           <Button
             size="lg"
             className="mt-6 w-full"
-            onClick={() => setPlaying(true)}
+            onClick={() => {
+              trackQuizStarted(mode, difficulty);
+              setPlaying(true);
+            }}
           >
             ▶ Start quiz
           </Button>

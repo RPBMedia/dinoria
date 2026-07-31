@@ -18,6 +18,10 @@ import {
 } from "@/lib/expeditions";
 import { useExpeditions } from "@/hooks/useExpeditions";
 import { useCollection } from "@/hooks/useCollection";
+import {
+  trackExpeditionFinished,
+  trackExpeditionStarted,
+} from "@/lib/analytics";
 import { QuizGame } from "@/components/QuizGame";
 import { Button } from "@/components/ui";
 
@@ -66,6 +70,7 @@ export function ExpeditionsMap() {
   const active = activeId ? getRegion(activeId) : null;
 
   function play(region: ExpeditionRegion) {
+    trackExpeditionStarted(region.id);
     setActiveId(region.id);
     setRunKey((k) => k + 1);
   }
@@ -250,6 +255,12 @@ function ExpeditionResult({
     savedRef.current = true;
     onRecord(region.id, stars, result.score);
     onDiscover(result.discoveredIds);
+    trackExpeditionFinished({
+      region: region.id,
+      stars,
+      correct: result.correctCount,
+      total: result.totalQuestions,
+    });
   }, [region.id, stars, result, onRecord, onDiscover]);
 
   const nextId = nextRegionId(region.id);
