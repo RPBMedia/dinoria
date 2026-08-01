@@ -102,8 +102,22 @@ export default function Home() {
       </main>
 
       <footer className="relative z-10 border-t border-cream/10 py-6 text-center text-sm text-cream-faint">
-        Dinoria &mdash; a prehistoric learning world. Dinosaur artwork &copy;
-        their creators via Wikimedia Commons.
+        <p>
+          Dinoria &mdash; a prehistoric learning world. Dinosaur artwork &copy;
+          their creators via Wikimedia Commons.
+        </p>
+        <p className="mt-1.5">
+          Designed &amp; built by{" "}
+          <a
+            href="https://www.ruibaiao.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-600 text-cream-dim underline decoration-cream/30 underline-offset-2 transition-colors hover:text-cream"
+          >
+            Rui Bai&atilde;o
+          </a>{" "}
+          &middot; available for freelance projects
+        </p>
       </footer>
     </div>
   );
