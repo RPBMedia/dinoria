@@ -532,6 +532,13 @@ Advanced systems:
 ## Milestone 6
 
 -   Dinosaur catalog expanded to 200
+-   Audit expeditions so each region's questions actually match its title/theme.
+    Today regions filter only by period + a difficulty tier, so themed claims
+    can be violated — e.g. "Apex Ridge — the rarest Jurassic beasts" still
+    serves common icons like Allosaurus, and a "long-necks" region isn't limited
+    to sauropods. Give regions an explicit theme (e.g. family/body-type filters,
+    or a *minimum* rarity tier for "rare" regions) and draw answers only from
+    dinosaurs that fit, so the content honours what each expedition promises.
 -   Continued content, polish and performance work
 
 ------------------------------------------------------------------------
