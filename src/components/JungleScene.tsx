@@ -25,10 +25,11 @@ export function JungleScene() {
       />
       <div className="absolute left-1/2 top-[13%] h-24 w-24 -translate-x-1/2 rounded-full bg-sun-300/80 blur-md" />
 
-      {/* pterosaurs */}
-      <Bird className="top-[24%] text-canopy-950/70" scale={1} delay={0} dur={26} />
-      <Bird className="top-[30%] text-canopy-950/60" scale={0.7} delay={5} dur={32} />
-      <Bird className="top-[19%] text-canopy-950/50" scale={0.5} delay={12} dur={38} />
+      {/* Pteranodons gliding across the sky — varied sizes/speeds for depth */}
+      <Pteranodon className="top-[22%] text-canopy-950/75" scale={1.15} delay={0} dur={30} />
+      <Pteranodon className="top-[31%] text-canopy-950/60" scale={0.8} delay={4} dur={34} />
+      <Pteranodon className="top-[17%] text-canopy-950/45" scale={0.55} delay={9} dur={44} />
+      <Pteranodon className="top-[27%] text-canopy-950/35" scale={0.4} delay={17} dur={52} />
 
       {/* far mountains + volcano */}
       <svg
@@ -106,7 +107,9 @@ function Canopy({
   );
 }
 
-function Bird({
+/** A gliding Pteranodon silhouette, facing right (the direction of travel):
+ * long forward beak, backward-swept head crest, and two swept membrane wings. */
+function Pteranodon({
   className,
   scale,
   delay,
@@ -120,15 +123,18 @@ function Bird({
   return (
     <svg
       className={`absolute left-0 ${className}`}
-      width={40 * scale}
-      height={16 * scale}
-      viewBox="0 0 40 16"
+      width={60 * scale}
+      height={30 * scale}
+      viewBox="0 0 100 50"
       style={{ animation: `bird-fly ${dur}s linear ${delay}s infinite` }}
     >
-      <path
-        fill="currentColor"
-        d="M0 8 Q10 0 20 8 Q30 0 40 8 Q30 5 20 11 Q10 5 0 8 Z"
-      />
+      <g fill="currentColor">
+        <path d="M48 20 Q26 10 4 15 Q28 20 46 24 Z" />
+        <path d="M52 20 Q74 10 96 15 Q72 20 54 24 Z" />
+        <path d="M46 18 L50 4 L54 18 Z" />
+        <path d="M47 23 L50 36 L53 23 Z" />
+        <ellipse cx="50" cy="21" rx="4.2" ry="6.5" />
+      </g>
     </svg>
   );
 }
