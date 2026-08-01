@@ -3,6 +3,7 @@ import Link from "next/link";
 import { JungleScene } from "@/components/JungleScene";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PlayHub } from "@/components/PlayHub";
+import { DailyChallenge } from "@/components/DailyChallenge";
 import { TOTAL_DINOSAURS } from "@/lib/dinosaurs";
 import { SITE_URL } from "@/lib/site";
 
@@ -82,6 +83,9 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="mx-auto mb-4 w-full max-w-2xl">
+          <DailyChallenge />
+        </div>
         <PlayHub />
 
         <section className="mt-16 grid w-full max-w-3xl grid-cols-1 gap-4 text-center sm:grid-cols-3">

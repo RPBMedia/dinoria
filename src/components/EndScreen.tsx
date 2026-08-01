@@ -9,9 +9,12 @@ import { useAuth } from "@/services/auth";
 import { saveLocalScore, submitGlobalScore } from "@/services/leaderboard";
 import { readLocalCollection } from "@/services/collection";
 import { useCollection } from "@/hooks/useCollection";
+import { useExpeditions } from "@/hooks/useExpeditions";
+import { useProgress, type RecordOutcome } from "@/hooks/useProgress";
 import { getDinosaur } from "@/lib/dinosaurs";
 import { trackQuizFinished } from "@/lib/analytics";
 import { Button, ButtonLink, Card, Stat } from "@/components/ui";
+import { AwardBanner } from "@/components/AwardBanner";
 
 function fmtTime(ms: number | null): string {
   if (ms == null) return "—";
@@ -27,25 +30,34 @@ export function EndScreen({
 }) {
   const { player } = useAuth();
   const { discover } = useCollection();
+  const { clearedCount, threeStarCount } = useExpeditions();
+  const { recordQuiz } = useProgress();
   const [shared, setShared] = useState(false);
   const [newFinds, setNewFinds] = useState<Dinosaur[]>([]);
+  const [outcome, setOutcome] = useState<RecordOutcome | null>(null);
   const savedRef = useRef(false);
 
-  // Persist the score + record discoveries exactly once (StrictMode guard).
+  // Persist the score + record discoveries + award XP exactly once (StrictMode).
   useEffect(() => {
     if (savedRef.current) return;
     savedRef.current = true;
     // Which of this run's correct IDs were not already in the collection?
     const known = new Set(readLocalCollection());
-    setNewFinds(
-      result.discoveredIds
-        .filter((id) => !known.has(id))
-        .map((id) => getDinosaur(id))
-        .filter((d): d is Dinosaur => Boolean(d)),
-    );
+    const fresh = result.discoveredIds
+      .filter((id) => !known.has(id))
+      .map((id) => getDinosaur(id))
+      .filter((d): d is Dinosaur => Boolean(d));
+    setNewFinds(fresh);
     discover(result.discoveredIds);
     saveLocalScore(player, result);
     void submitGlobalScore(player, result).catch(() => {});
+    setOutcome(
+      recordQuiz(result, fresh.length, {
+        discoveredCount: new Set([...known, ...result.discoveredIds]).size,
+        expeditionsCleared: clearedCount,
+        threeStarRegions: threeStarCount,
+      }),
+    );
     trackQuizFinished({
       mode: result.mode,
       difficulty: result.difficulty,
@@ -54,7 +66,7 @@ export function EndScreen({
       correct: result.correctCount,
       total: result.totalQuestions,
     });
-  }, [player, result, discover]);
+  }, [player, result, discover, recordQuiz, clearedCount, threeStarCount]);
 
   const accuracyPct = Math.round(result.accuracy * 100);
   const greatRun = accuracyPct >= 80;
@@ -143,6 +155,8 @@ export function EndScreen({
           </Card>
         </motion.div>
       )}
+
+      <AwardBanner outcome={outcome} />
 
       <div className="mt-6 grid grid-cols-2 gap-3">
         <Button variant="leaf" size="lg" onClick={() => window.location.reload()}>

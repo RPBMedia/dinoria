@@ -14,17 +14,21 @@ import {
   regionAnswerPool,
   getRegion,
   isRegionUnlocked,
+  REGION_SEQUENCE,
   WORLD_MAP_CREDIT,
   type ExpeditionLand,
   type ExpeditionRegion,
 } from "@/lib/expeditions";
 import { useExpeditions } from "@/hooks/useExpeditions";
 import { useCollection } from "@/hooks/useCollection";
+import { useProgress, type RecordOutcome } from "@/hooks/useProgress";
+import { readLocalCollection } from "@/services/collection";
 import {
   trackExpeditionFinished,
   trackExpeditionStarted,
 } from "@/lib/analytics";
 import { QuizGame } from "@/components/QuizGame";
+import { AwardBanner } from "@/components/AwardBanner";
 import { Button } from "@/components/ui";
 
 const THEME: Record<
@@ -68,9 +72,26 @@ function Stars({ earned, className = "" }: { earned: number; className?: string 
 
 export function ExpeditionsMap() {
   const exp = useExpeditions();
-  const { discover } = useCollection();
+  const { discover, discoveredIds } = useCollection();
+  const { recordExpedition } = useProgress();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [runKey, setRunKey] = useState(0);
+
+  /** Award XP + achievements for a finished expedition, using star/collection
+   * counts optimistically updated with this run's result. */
+  function awardExpedition(
+    region: ExpeditionRegion,
+    stars: number,
+    result: GameResult,
+    newDiscoveries: number,
+  ): RecordOutcome {
+    const map = { ...exp.starMap, [region.id]: Math.max(exp.stars(region.id), stars) };
+    return recordExpedition(stars, result, newDiscoveries, {
+      discoveredCount: discoveredIds.size + newDiscoveries,
+      expeditionsCleared: REGION_SEQUENCE.filter((r) => (map[r.id] ?? 0) >= 1).length,
+      threeStarRegions: REGION_SEQUENCE.filter((r) => (map[r.id] ?? 0) >= 3).length,
+    });
+  }
 
   const active = activeId ? getRegion(activeId) : null;
 
@@ -235,6 +256,7 @@ export function ExpeditionsMap() {
                   result={result}
                   onRecord={exp.recordResult}
                   onDiscover={discover}
+                  onAward={awardExpedition}
                   onRetry={() => setRunKey((k) => k + 1)}
                   onNext={(nextId) => {
                     setActiveId(nextId);
@@ -262,6 +284,7 @@ function ExpeditionResult({
   result,
   onRecord,
   onDiscover,
+  onAward,
   onRetry,
   onNext,
   onMap,
@@ -271,6 +294,12 @@ function ExpeditionResult({
   result: GameResult;
   onRecord: (regionId: string, stars: number, score: number) => void;
   onDiscover: (ids: string[]) => void;
+  onAward: (
+    region: ExpeditionRegion,
+    stars: number,
+    result: GameResult,
+    newDiscoveries: number,
+  ) => RecordOutcome;
   onRetry: () => void;
   onNext: (nextId: string) => void;
   onMap: () => void;
@@ -279,20 +308,24 @@ function ExpeditionResult({
   const stars = starsFor(result.correctCount, result.totalQuestions);
   const cleared = stars >= 1;
 
-  // Persist stars + discoveries exactly once, after render (StrictMode guard).
+  // Persist stars + discoveries + award XP exactly once (StrictMode guard).
   const savedRef = useRef(false);
+  const [outcome, setOutcome] = useState<RecordOutcome | null>(null);
   useEffect(() => {
     if (savedRef.current) return;
     savedRef.current = true;
+    const known = new Set(readLocalCollection());
+    const newCount = result.discoveredIds.filter((id) => !known.has(id)).length;
     onRecord(region.id, stars, result.score);
     onDiscover(result.discoveredIds);
+    setOutcome(onAward(region, stars, result, newCount));
     trackExpeditionFinished({
       region: region.id,
       stars,
       correct: result.correctCount,
       total: result.totalQuestions,
     });
-  }, [region.id, stars, result, onRecord, onDiscover]);
+  }, [region, stars, result, onRecord, onDiscover, onAward]);
 
   const nextId = nextRegionId(region.id);
   const nextUnlocked = nextId ? isUnlockedAfter(nextId, stars) : false;
@@ -338,6 +371,10 @@ function ExpeditionResult({
           Score at least 50% to clear this region.
         </p>
       )}
+
+      <div className="mx-auto w-full max-w-sm text-left">
+        <AwardBanner outcome={outcome} />
+      </div>
 
       <div className="mt-7 grid grid-cols-2 gap-3">
         {nextId && nextUnlocked ? (

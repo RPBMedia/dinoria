@@ -54,6 +54,8 @@ export interface GameOptions {
   answerPool?: readonly Dinosaur[];
   distractorPool?: readonly Dinosaur[];
   questionCount?: number;
+  /** Fixed seed for deterministic runs (e.g. the daily challenge). */
+  seed?: number;
 }
 
 export function useGame(
@@ -61,7 +63,8 @@ export function useGame(
   difficulty: GameDifficulty,
   options?: GameOptions,
 ): GameView {
-  const seed = useMemo(() => Date.now() >>> 0, []);
+  const optionSeed = options?.seed;
+  const seed = useMemo(() => optionSeed ?? Date.now() >>> 0, [optionSeed]);
   const answerPool = options?.answerPool;
   const pool = useMemo(
     () => answerPool ?? poolFor(DINOSAURS, difficulty),

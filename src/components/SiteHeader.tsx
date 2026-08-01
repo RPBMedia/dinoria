@@ -21,7 +21,13 @@ export function SiteHeader() {
 
       {/* On mobile this wraps to its own full-width row below the logo/account
           so the header never overflows narrow screens. */}
-      <nav className="order-last flex w-full items-center justify-center gap-1 text-sm sm:order-none sm:w-auto sm:justify-start sm:gap-2">
+      <nav className="order-last flex w-full flex-wrap items-center justify-center gap-x-1 gap-y-1 text-sm sm:order-none sm:w-auto sm:flex-nowrap sm:justify-start sm:gap-2">
+        <Link
+          href="/daily"
+          className="rounded-full px-2.5 py-2 text-cream-dim transition-colors hover:text-cream sm:px-3"
+        >
+          Daily
+        </Link>
         <Link
           href="/expeditions"
           className="rounded-full px-2.5 py-2 text-cream-dim transition-colors hover:text-cream sm:px-3"
@@ -39,6 +45,12 @@ export function SiteHeader() {
           className="rounded-full px-2.5 py-2 text-cream-dim transition-colors hover:text-cream sm:px-3"
         >
           Leaderboard
+        </Link>
+        <Link
+          href="/profile"
+          className="rounded-full px-2.5 py-2 text-cream-dim transition-colors hover:text-cream sm:px-3"
+        >
+          Profile
         </Link>
       </nav>
 

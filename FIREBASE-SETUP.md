@@ -65,6 +65,10 @@ service cloud.firestore {
     match /expeditions/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
     }
+    // And one progression document (XP, stats, achievements, daily streak).
+    match /progress/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
   }
 }
 ```

@@ -13,6 +13,7 @@ import {
 } from "@/services/expeditions";
 import {
   isRegionUnlocked,
+  REGION_SEQUENCE,
   totalStars,
   type StarMap,
 } from "@/lib/expeditions";
@@ -72,6 +73,13 @@ export function useExpeditions() {
     [starMap],
   );
 
+  const clearedCount = REGION_SEQUENCE.filter(
+    (r) => (starMap[r.id] ?? 0) >= 1,
+  ).length;
+  const threeStarCount = REGION_SEQUENCE.filter(
+    (r) => (starMap[r.id] ?? 0) >= 3,
+  ).length;
+
   return {
     progress,
     starMap,
@@ -80,5 +88,7 @@ export function useExpeditions() {
     isUnlocked,
     stars: (id: string) => progress[id]?.stars ?? 0,
     totalStars: totalStars(starMap),
+    clearedCount,
+    threeStarCount,
   };
 }
