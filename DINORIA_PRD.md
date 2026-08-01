@@ -500,19 +500,22 @@ Only continue after Milestone 1 is stable.
 -   World map
 -   Progression
 
-## Milestone 4
+## Milestone 4 — ✅ Implemented
 
--   XP
--   Levels
--   Achievements
--   Daily Challenge
--   Home screen animation upgrade: replace the simple bird silhouettes drifting
-    across the sky with silhouettes of flying Pteranodons (pterosaurs), at
-    varied sizes and speeds for a sense of depth. Keep the animation subtle and
-    performant, and respect reduced-motion preferences.
+-   XP — earned from quizzes, expeditions and the daily challenge. ✅
+-   Levels — triangular XP curve with titles; shown on the Profile page. ✅
+-   Achievements — 16 data-driven badges, unlocked live with a celebration
+    banner; browsable on the Profile page. ✅
+-   Daily Challenge — 10 dinosaurs seeded by date (same for everyone), with a
+    daily streak; entry on the home screen and `/daily`. ✅
+-   Home screen animation upgrade: bird silhouettes replaced with flying
+    Pteranodons at varied sizes/speeds; reduced-motion respected. ✅
 -   Expeditions: for each period (Triassic, Jurassic, Cretaceous) show a
     paleogeographic map of how the world / continents looked at that time, with
-    a short caption. (Implemented ahead of schedule.)
+    a short caption. ✅ (Implemented ahead of schedule.)
+
+Progress persists locally and syncs to Firestore (`progress/{uid}`) for
+signed-in players, mirroring the collection and expeditions.
 
 ## Milestone 5
 
