@@ -156,11 +156,12 @@ export const LANDS: ExpeditionLand[] = [
         name: "Coastal Marshes",
         blurb: "Duckbills, raptors and icons.",
         period: "Cretaceous",
-        // Hadrosaurs (duckbills) and dromaeosaurs (raptors) — the icons of the
-        // Cretaceous coasts.
-        maxTier: 5,
+        // Hadrosaurs (duckbills) and dromaeosaurs (raptors) — the *icons* of the
+        // Cretaceous coasts, so cap to the famous/mid tiers to keep this intro
+        // region approachable (mean tier ~2.2, like the Jurassic's Fern Prairies).
+        maxTier: 3,
         families: DUCKBILLS_AND_RAPTORS,
-        questionCount: 8,
+        questionCount: 6,
         difficulty: "normal",
       },
       {
