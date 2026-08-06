@@ -5,6 +5,11 @@ export type Diet = "carnivore" | "herbivore" | "omnivore" | "piscivore";
 
 export type Period = "Triassic" | "Jurassic" | "Cretaceous";
 
+/** Broad ecosystem group. Dinoria covers the whole Mesozoic cast, so alongside
+ * true dinosaurs we include flying pterosaurs, marine reptiles and early birds —
+ * each labelled accurately (pterosaurs and marine reptiles are NOT dinosaurs). */
+export type DinoGroup = "dinosaur" | "bird" | "pterosaur" | "marine reptile";
+
 /** 1 = iconic/easy … 5 = legendary. M1 ships tiers 1–2; 3–5 arrive with the
  * larger database in Milestone 2. */
 export type DifficultyTier = 1 | 2 | 3 | 4 | 5;
@@ -21,6 +26,9 @@ export interface Dinosaur {
   imageAttribution: string;
   difficulty: DifficultyTier;
   family: string;
+  /** Ecosystem group for an accurate badge (defaults conceptually to
+   * "dinosaur"; pterosaurs / marine reptiles / birds are labelled as such). */
+  group: DinoGroup;
   period: Period;
   periodDetail: string;
   diet: Diet;

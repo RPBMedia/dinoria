@@ -1,4 +1,4 @@
-import type { Diet } from "@/types/dinosaur";
+import type { Diet, DinoGroup } from "@/types/dinosaur";
 
 /** Human-friendly mass: tonnes once we hit 1,000 kg, else kilograms. */
 export function formatWeight(kg: number): string {
@@ -18,6 +18,22 @@ export const DIET_EMOJI: Record<Diet, string> = {
   herbivore: "🌿",
   omnivore: "🍽️",
   piscivore: "🐟",
+};
+
+/** Ecosystem-group badge label + emoji. Pterosaurs and marine reptiles are
+ * flagged as their own thing (they are NOT dinosaurs). */
+export const GROUP_LABEL: Record<DinoGroup, string> = {
+  dinosaur: "Dinosaur",
+  bird: "Bird",
+  pterosaur: "Pterosaur",
+  "marine reptile": "Marine reptile",
+};
+
+export const GROUP_EMOJI: Record<DinoGroup, string> = {
+  dinosaur: "🦕",
+  bird: "🐦",
+  pterosaur: "🪽",
+  "marine reptile": "🌊",
 };
 
 export const TIER_LABEL: Record<number, string> = {

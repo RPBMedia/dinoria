@@ -1,6 +1,13 @@
 import Image from "next/image";
 import type { Dinosaur } from "@/types/dinosaur";
-import { DIET_EMOJI, formatLength, formatWeight, TIER_LABEL } from "@/lib/format";
+import {
+  DIET_EMOJI,
+  formatLength,
+  formatWeight,
+  GROUP_EMOJI,
+  GROUP_LABEL,
+  TIER_LABEL,
+} from "@/lib/format";
 
 /** Presentational profile of a single dinosaur — every field from the record.
  * Pure/server-friendly so it can back both the Collection modal and the
@@ -33,6 +40,9 @@ export function DinoDetail({ dino }: { dino: Dinosaur }) {
       </header>
 
       <div className="mt-4 flex flex-wrap gap-2 text-sm">
+        <Chip>
+          {GROUP_EMOJI[dino.group]} {GROUP_LABEL[dino.group]}
+        </Chip>
         <Chip>🕰️ {dino.period}</Chip>
         <Chip>
           {DIET_EMOJI[dino.diet]} {dino.diet}
