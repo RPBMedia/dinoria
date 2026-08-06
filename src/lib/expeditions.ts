@@ -6,7 +6,7 @@
  * database (see buildQuestions). Clearing a region (≥1★) unlocks the next in
  * sequence; finishing a land opens the next. Data-driven and pure — no I/O. */
 
-import type { Dinosaur, Period } from "@/types/dinosaur";
+import type { Diet, Dinosaur, Period } from "@/types/dinosaur";
 import type { GameDifficulty } from "@/types/game";
 import { DINOSAURS } from "@/lib/dinosaurs";
 
@@ -15,8 +15,17 @@ export interface ExpeditionRegion {
   name: string;
   blurb: string;
   period: Period;
-  /** Answer pool = period dinosaurs with difficulty ≤ maxTier. */
+  /** Answer pool lower tier bound (inclusive). Defaults to 1. Set above 1 for
+   * "rarest" regions so common/famous species don't leak in. */
+  minTier?: number;
+  /** Answer pool upper tier bound (inclusive). */
   maxTier: number;
+  /** Optional theme filter: if set, an answer's diet must be one of these. */
+  diets?: Diet[];
+  /** Optional theme filter: if set, an answer's family must be one of these
+   * (exact match). Lets a region match a morphological theme (e.g. "long necks
+   * and plated backs") rather than just a tier range. */
+  families?: string[];
   questionCount: number;
   /** Score multiplier tier for this region. */
   difficulty: GameDifficulty;
@@ -40,6 +49,31 @@ export interface ExpeditionLand {
 export const WORLD_MAP_CREDIT =
   "Paleogeography maps by Merikanto, Wikimedia Commons (CC BY-SA 4.0 / CC0)";
 
+/** Family groups used to theme certain regions. Names match the `family`
+ * values in the dinosaur data exactly. */
+const LONG_NECKS_AND_PLATES = [
+  // long necks (sauropods)
+  "Diplodocidae",
+  "Brachiosauridae",
+  "Camarasauridae",
+  "Mamenchisauridae",
+  // plated backs / early armour (thyreophorans)
+  "Stegosauridae",
+  "Huayangosauridae",
+  "Scelidosauridae",
+  "Thyreophora",
+];
+const DUCKBILLS_AND_RAPTORS = ["Hadrosauridae", "Dromaeosauridae"];
+const FRILLS_HORNS_AND_ARMOUR = [
+  // frills & horns (ceratopsians)
+  "Ceratopsidae",
+  "Protoceratopsidae",
+  "Psittacosauridae",
+  // armour (ankylosaurs)
+  "Ankylosauridae",
+  "Nodosauridae",
+];
+
 export const LANDS: ExpeditionLand[] = [
   {
     id: "triassic",
@@ -56,8 +90,10 @@ export const LANDS: ExpeditionLand[] = [
         name: "First Footsteps",
         blurb: "Meet the earliest dinosaurs of all.",
         period: "Triassic",
+        // The whole Triassic cast — the dinosaurs' earliest days (only a handful
+        // of genera existed), so the count matches the pool to avoid repeats.
         maxTier: 5,
-        questionCount: 6,
+        questionCount: 4,
         difficulty: "hard",
       },
     ],
@@ -86,7 +122,9 @@ export const LANDS: ExpeditionLand[] = [
         name: "Giant's Valley",
         blurb: "Long necks and plated backs.",
         period: "Jurassic",
-        maxTier: 3,
+        // Sauropods and thyreophorans only — true to "long necks and plated backs".
+        maxTier: 5,
+        families: LONG_NECKS_AND_PLATES,
         questionCount: 8,
         difficulty: "hard",
       },
@@ -95,6 +133,8 @@ export const LANDS: ExpeditionLand[] = [
         name: "Apex Ridge",
         blurb: "The rarest Jurassic beasts.",
         period: "Jurassic",
+        // Rarest only — tiers 4–5. Keeps common icons (Stegosaurus, etc.) out.
+        minTier: 4,
         maxTier: 5,
         questionCount: 10,
         difficulty: "legendary",
@@ -116,7 +156,10 @@ export const LANDS: ExpeditionLand[] = [
         name: "Coastal Marshes",
         blurb: "Duckbills, raptors and icons.",
         period: "Cretaceous",
-        maxTier: 2,
+        // Hadrosaurs (duckbills) and dromaeosaurs (raptors) — the icons of the
+        // Cretaceous coasts.
+        maxTier: 5,
+        families: DUCKBILLS_AND_RAPTORS,
         questionCount: 8,
         difficulty: "normal",
       },
@@ -125,7 +168,9 @@ export const LANDS: ExpeditionLand[] = [
         name: "Horned Plains",
         blurb: "Frills, horns and armour.",
         period: "Cretaceous",
-        maxTier: 3,
+        // Ceratopsians (frills & horns) and ankylosaurs/nodosaurs (armour).
+        maxTier: 5,
+        families: FRILLS_HORNS_AND_ARMOUR,
         questionCount: 10,
         difficulty: "hard",
       },
@@ -134,7 +179,9 @@ export const LANDS: ExpeditionLand[] = [
         name: "Tyrant Territory",
         blurb: "The great predators close in.",
         period: "Cretaceous",
-        maxTier: 4,
+        // Predators only — carnivores and the piscivorous spinosaurs.
+        maxTier: 5,
+        diets: ["carnivore", "piscivore"],
         questionCount: 10,
         difficulty: "very-hard",
       },
@@ -175,13 +222,22 @@ export function nextRegionId(id: string): string | null {
     : null;
 }
 
-/** Answers for a region: period dinosaurs capped to its tier. */
+/** Answers for a region: period dinosaurs within its tier band, further
+ * narrowed to the region's theme (diet / family) when set. This keeps each
+ * region's answers true to its purpose — e.g. "Apex Ridge" (minTier 4) never
+ * surfaces a common Stegosaurus, and "Tyrant Territory" only asks predators. */
 export function regionAnswerPool(
   region: ExpeditionRegion,
   dinos: readonly Dinosaur[] = DINOSAURS,
 ): Dinosaur[] {
+  const minTier = region.minTier ?? 1;
   return dinos.filter(
-    (d) => d.period === region.period && d.difficulty <= region.maxTier,
+    (d) =>
+      d.period === region.period &&
+      d.difficulty >= minTier &&
+      d.difficulty <= region.maxTier &&
+      (!region.diets || region.diets.includes(d.diet)) &&
+      (!region.families || region.families.includes(d.family)),
   );
 }
 

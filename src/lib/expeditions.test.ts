@@ -59,6 +59,37 @@ describe("expedition regions", () => {
   });
 });
 
+describe("region pools match their theme", () => {
+  it("gives every region enough distinct answers to avoid repeats", () => {
+    for (const r of REGION_SEQUENCE) {
+      expect(regionAnswerPool(r).length).toBeGreaterThanOrEqual(r.questionCount);
+    }
+  });
+
+  it("keeps Apex Ridge to the rarest tiers only (no common icons)", () => {
+    const apex = regionAnswerPool(getRegion("jur-3")!);
+    for (const d of apex) expect(d.difficulty).toBeGreaterThanOrEqual(4);
+    expect(apex.some((d) => /stegosaurus/i.test(d.displayName))).toBe(false);
+  });
+
+  it("restricts Tyrant Territory to predators", () => {
+    const preds = regionAnswerPool(getRegion("cre-3")!);
+    for (const d of preds) {
+      expect(["carnivore", "piscivore"]).toContain(d.diet);
+    }
+  });
+
+  it("restricts family-themed regions to their families", () => {
+    for (const id of ["jur-2", "cre-1", "cre-2"]) {
+      const region = getRegion(id)!;
+      const pool = regionAnswerPool(region);
+      for (const d of pool) {
+        expect(region.families).toContain(d.family);
+      }
+    }
+  });
+});
+
 describe("unlock progression", () => {
   it("opens the first region and gates the rest behind clearing the previous", () => {
     const [first, second] = REGION_SEQUENCE;
