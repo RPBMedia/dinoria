@@ -116,7 +116,43 @@ async function fetchBest(id, term) {
   );
 }
 
+/** Download one explicit Commons File: into public/dinos/<id>, printing the
+ * attribution line. Used after visually vetting a shortlist. */
+async function fetchFile(id, title, destDir = "public/dinos") {
+  const params = new URLSearchParams({
+    action: "query",
+    format: "json",
+    titles: title,
+    prop: "imageinfo",
+    iiprop: "url|extmetadata|mime|size",
+    iiurlwidth: "900",
+  });
+  const res = await fetch(`${API}?${params}`, { headers: { "User-Agent": UA } });
+  const data = await res.json();
+  const page = Object.values(data?.query?.pages ?? {})[0];
+  const ii = (page?.imageinfo ?? [])[0];
+  if (!ii) throw new Error(`no imageinfo for ${title}`);
+  const meta = ii.extmetadata ?? {};
+  const license = stripHtml(meta.LicenseShortName?.value ?? "");
+  const artist = stripHtml(meta.Artist?.value ?? "") || "Unknown";
+  const ext = ii.mime === "image/png" ? "png" : "jpg";
+  const outDir = path.join(process.cwd(), destDir);
+  fs.mkdirSync(outDir, { recursive: true });
+  const out = path.join(outDir, `${id}.${ext}`);
+  const img = await fetch(ii.thumburl ?? ii.url, { headers: { "User-Agent": UA } });
+  fs.writeFileSync(out, Buffer.from(await img.arrayBuffer()));
+  console.log(
+    JSON.stringify({
+      id,
+      image: `/dinos/${id}.${ext}`,
+      imageAttribution: `${artist}, Wikimedia Commons, ${license}`,
+      source: ii.descriptionurl,
+    }),
+  );
+}
+
 const [cmd, ...args] = process.argv.slice(2);
 if (cmd === "shortlist") await shortlist(args);
 else if (cmd === "fetch") await fetchBest(args[0], args.slice(1).join(" "));
-else console.error("usage: shortlist <terms...> | fetch <id> <term>");
+else if (cmd === "fetchfile") await fetchFile(args[0], args.slice(1).join(" "));
+else console.error("usage: shortlist <terms...> | fetch <id> <term> | fetchfile <id> <File:title>");

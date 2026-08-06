@@ -14,25 +14,33 @@ import {
 const dinosaurs = dinosaursJson as Dinosaur[];
 
 describe("dinosaur database", () => {
-  it("has 101 complete records with unique ids and local images", () => {
-    expect(dinosaurs).toHaveLength(101);
+  it("has complete records with unique ids and local images", () => {
     const ids = new Set(dinosaurs.map((d) => d.id));
-    expect(ids.size).toBe(101);
+    expect(ids.size).toBe(dinosaurs.length); // ids are unique
+    expect(dinosaurs.length).toBeGreaterThanOrEqual(107); // grows toward 200
     for (const d of dinosaurs) {
-      expect(d.image).toMatch(/^\/dinos\/.+\.png$/);
+      expect(d.image).toMatch(/^\/dinos\/.+\.(png|jpe?g)$/);
       expect(d.imageAttribution).toContain("Wikimedia Commons");
       expect(d.interestingFacts.length).toBeGreaterThanOrEqual(3);
       expect(d.description.length).toBeGreaterThan(80);
-      expect([1, 2, 3, 4, 5]).toContain(d.difficulty); // M2 ships tiers 1–5
+      expect([1, 2, 3, 4, 5]).toContain(d.difficulty); // tiers 1–5
     }
   });
 
   it("difficulty pools are cumulative across all five tiers", () => {
-    expect(poolFor(dinosaurs, "easy")).toHaveLength(12); // tier 1
-    expect(poolFor(dinosaurs, "normal")).toHaveLength(25); // tiers 1–2
-    expect(poolFor(dinosaurs, "hard")).toHaveLength(43); // tiers 1–3
-    expect(poolFor(dinosaurs, "very-hard")).toHaveLength(73); // tiers 1–4
-    expect(poolFor(dinosaurs, "legendary")).toHaveLength(101); // tiers 1–5
+    // Size-agnostic (the catalog grows in batches): each tier is a superset of
+    // the previous, and the top tier covers the whole catalog.
+    const easy = poolFor(dinosaurs, "easy").length;
+    const normal = poolFor(dinosaurs, "normal").length;
+    const hard = poolFor(dinosaurs, "hard").length;
+    const veryHard = poolFor(dinosaurs, "very-hard").length;
+    const legendary = poolFor(dinosaurs, "legendary").length;
+    expect(easy).toBeGreaterThan(0);
+    expect(normal).toBeGreaterThanOrEqual(easy);
+    expect(hard).toBeGreaterThanOrEqual(normal);
+    expect(veryHard).toBeGreaterThanOrEqual(hard);
+    expect(legendary).toBeGreaterThanOrEqual(veryHard);
+    expect(legendary).toBe(dinosaurs.length);
   });
 });
 
