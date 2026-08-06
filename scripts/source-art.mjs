@@ -29,7 +29,7 @@ async function search(term) {
     action: "query",
     format: "json",
     generator: "search",
-    gsrsearch: `${term} dinosaur`,
+    gsrsearch: term, // genus name; works for dinosaurs, pterosaurs & marine reptiles alike
     gsrnamespace: "6", // File:
     gsrlimit: "25",
     prop: "imageinfo",
