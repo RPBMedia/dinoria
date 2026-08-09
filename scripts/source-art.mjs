@@ -154,5 +154,6 @@ async function fetchFile(id, title, destDir = "public/dinos") {
 const [cmd, ...args] = process.argv.slice(2);
 if (cmd === "shortlist") await shortlist(args);
 else if (cmd === "fetch") await fetchBest(args[0], args.slice(1).join(" "));
-else if (cmd === "fetchfile") await fetchFile(args[0], args.slice(1).join(" "));
+else if (cmd === "fetchfile")
+  await fetchFile(args[0], args.slice(1).join(" "), process.env.DEST || "public/dinos");
 else console.error("usage: shortlist <terms...> | fetch <id> <term> | fetchfile <id> <File:title>");
