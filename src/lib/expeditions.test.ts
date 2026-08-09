@@ -42,7 +42,7 @@ describe("expedition regions", () => {
   it("builds valid 4-option questions even for the tiny Triassic pool", () => {
     const tri = getRegion("tri-1")!;
     const answers = regionAnswerPool(tri);
-    expect(answers.length).toBe(4);
+    expect(answers.length).toBeGreaterThanOrEqual(4); // small Triassic cast, grows over time
     const qs = buildQuestions(
       answers,
       tri.questionCount,
