@@ -67,6 +67,18 @@ while (stack.length) {
   if (y < height - 1) seed(x, y + 1);
 }
 
+// Optional extra pass: clear ANY remaining near-PURE-white pixel (min channel
+// >= pureWhiteMin), regardless of connectivity. Catches enclosed white gaps
+// (e.g. between a quadruped's legs) that the border flood-fill can't reach,
+// while sparing cream/tan bellies (which sit below the high threshold).
+const PURE_WHITE_MIN = Number(process.argv[5] ?? 0); // 0 = off; ~244 to enable
+if (PURE_WHITE_MIN > 0) {
+  for (let p = 0; p < width * height; p++) {
+    const i = p * channels;
+    if (Math.min(data[i], data[i + 1], data[i + 2]) >= PURE_WHITE_MIN) isBg[p] = 1;
+  }
+}
+
 let removed = 0;
 for (let p = 0; p < width * height; p++) {
   if (isBg[p]) {
